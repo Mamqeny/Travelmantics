@@ -18,7 +18,6 @@
         </activity>
 
         <activity android:name=".DealActivity">
-
         </activity>
     </application>
 

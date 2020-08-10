@@ -6,14 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -33,10 +33,10 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
         deals = FirebaseUtil.mDeals;
         mChildListener = new ChildEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                TravelDeal td = dataSnapshot.getValue(TravelDeal.class);
+            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String s) {
+                TravelDeal td = snapshot.getValue(TravelDeal.class);
                 Log.d("Deal: ", td.getTitle());
-                td.setId(dataSnapshot.getKey());
+                td.setId(snapshot.getKey());
                 deals.add(td);
                 notifyItemInserted(deals.size()-1);
 
