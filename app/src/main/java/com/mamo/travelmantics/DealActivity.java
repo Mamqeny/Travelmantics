@@ -60,10 +60,10 @@ public class DealActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View view) {
-                Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT);
-                intent1.setType("image/jpeg");
-                intent1.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                startActivityForResult(intent1.createChooser(intent1, "Insert Picture"), PICTURE_RESULT);
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/jpeg");
+                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                startActivityForResult(intent.createChooser(intent, "Insert Picture"), PICTURE_RESULT);
             }
         });
     }
@@ -156,11 +156,10 @@ public class DealActivity extends AppCompatActivity {
     }
     private void showImage(String url){
         if(url !=null && url.isEmpty() == false){
-            int width = Resources.getSystem().getDisplayMetrics().widthPixels;
-            Picasso
-                    .get()
+           int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+            Picasso.get()
                     .load(url)
-                    .resize(width, width*2/3) // resizes the image to these dimensions (in pixel). does not respect aspect ratio
+                    .resize( width,width*2/3) // resizes the image to these dimensions (in pixel). does not respect aspect ratio
                     .centerCrop()
                     .into(imageView);
         }
