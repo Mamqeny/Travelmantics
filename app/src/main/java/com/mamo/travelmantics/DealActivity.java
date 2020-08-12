@@ -1,6 +1,7 @@
 package com.mamo.travelmantics;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,15 +10,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Picasso;
 
 public class DealActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseDatabase;
@@ -26,6 +31,7 @@ public class DealActivity extends AppCompatActivity {
     EditText txtTitle;
     EditText txtDescription;
     EditText txtPrice;
+    ImageView imageView;
     TravelDeal deal;
 
     @Override
@@ -38,6 +44,7 @@ public class DealActivity extends AppCompatActivity {
         txtTitle = (EditText) findViewById(R.id.txtTitle);
         txtDescription = (EditText) findViewById(R.id.txtDescription);
         txtPrice = (EditText) findViewById(R.id.txtPrice);
+        imageView = (ImageView) findViewById(R.id.image);
         Intent intent = getIntent();
         TravelDeal  deal = (TravelDeal) intent.getSerializableExtra("Deal");
         if(deal == null){
@@ -47,15 +54,16 @@ public class DealActivity extends AppCompatActivity {
         txtTitle.setText(deal.getTitle());
         txtDescription.setText(deal.getDescription());
         txtPrice.setText(deal.getPrice());
+        showImage(deal.getImageUrl());
         Button btnImage = findViewById(R.id.btnImage);
         btnImage.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("imagr/jpeg");
-                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                startActivityForResult(intent.createChooser(intent, "Insert Picture"), PICTURE_RESULT);
+                Intent intent1 = new Intent(Intent.ACTION_GET_CONTENT);
+                intent1.setType("image/jpeg");
+                intent1.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                startActivityForResult(intent1.createChooser(intent1, "Insert Picture"), PICTURE_RESULT);
             }
         });
     }
@@ -102,6 +110,14 @@ public class DealActivity extends AppCompatActivity {
         if(requestCode == PICTURE_RESULT && resultCode == RESULT_OK){
             Uri imageUri = data.getData();
             StorageReference ref = FirebaseUtil.mStorageRef.child(imageUri.getLastPathSegment());
+            ref.putFile(imageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    String url = taskSnapshot.getMetadata().getReference().getDownloadUrl().toString();
+                    deal.setImageUrl(url);
+                    showImage(url);
+                }
+            });
         }
     }
 
@@ -137,6 +153,17 @@ public class DealActivity extends AppCompatActivity {
         txtTitle.setEnabled(isEnabled);
         txtDescription.setEnabled(isEnabled);
         txtPrice.setEnabled(isEnabled);
+    }
+    private void showImage(String url){
+        if(url !=null && url.isEmpty() == false){
+            int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+            Picasso
+                    .get()
+                    .load(url)
+                    .resize(width, width*2/3) // resizes the image to these dimensions (in pixel). does not respect aspect ratio
+                    .centerCrop()
+                    .into(imageView);
+        }
     }
 }
 

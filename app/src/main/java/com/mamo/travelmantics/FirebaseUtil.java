@@ -26,7 +26,7 @@ public class FirebaseUtil {
     public static FirebaseAuth mFirebaseAuth;
     public static FirebaseStorage mStorage;
     public static StorageReference mStorageRef;
-    public static FirebaseAuth.AuthStateListener mAuthlistener;
+    public static FirebaseAuth.AuthStateListener mAuthListener;
     public static ArrayList<TravelDeal> mDeals;
     private static final int RC_SIGN_IN = 123;
     private static ListActivity caller;
@@ -41,7 +41,7 @@ public class FirebaseUtil {
             mFirebaseDatabase = FirebaseDatabase.getInstance();
             mFirebaseAuth = FirebaseAuth.getInstance();
             caller = callerActivity;
-            mAuthlistener =  new FirebaseAuth.AuthStateListener() {
+            mAuthListener =  new FirebaseAuth.AuthStateListener() {
                 @Override
                 public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                     if (firebaseAuth.getCurrentUser() == null){
@@ -109,10 +109,10 @@ public class FirebaseUtil {
                 RC_SIGN_IN);
     }
     public static void  attachListner(){
-        mFirebaseAuth.addAuthStateListener(mAuthlistener);
+        mFirebaseAuth.addAuthStateListener(mAuthListener);
     }
     public static void detachListner(){
-        mFirebaseAuth.removeAuthStateListener(mAuthlistener);
+        mFirebaseAuth.removeAuthStateListener(mAuthListener);
     }
     public static void connectStorage(){
         mStorage = FirebaseStorage.getInstance();
