@@ -4,5 +4,8 @@
     <item android:id="@+id/insert_memu"
         android:title="New Travel Deal"
         app:showAsAction="never"/>
+    <item android:id="@+id/logout_memu"
+        android:title="Logout"
+        app:showAsAction="never"/>
 
 </menu>
