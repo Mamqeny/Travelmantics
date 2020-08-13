@@ -1,6 +1,7 @@
 package com.mamo.travelmantics;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -158,10 +159,10 @@ public class DealActivity extends AppCompatActivity {
     }
     private void showImage(String url){
         if(url !=null && !url.isEmpty()){
-           //int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+           int width = Resources.getSystem().getDisplayMetrics().widthPixels;
             Picasso.get()
                     .load(url)
-                    .resize(100,200) // resizes the image to these dimensions (in pixel). does not respect aspect ratio
+                    .resize(width, width*2/3)
                     .centerCrop()
                     .into(imageView);
         }
