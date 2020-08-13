@@ -1,7 +1,6 @@
 package com.mamo.travelmantics;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -63,10 +62,11 @@ public class DealActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/jpeg");
                 intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                startActivityForResult(intent.createChooser(intent, "Insert Picture"), PICTURE_RESULT);
+                startActivityForResult(Intent.createChooser(intent, "Insert Picture"), PICTURE_RESULT);
             }
         });
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -108,7 +108,9 @@ public class DealActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == PICTURE_RESULT && resultCode == RESULT_OK){
+            assert data != null;
             Uri imageUri = data.getData();
+            assert imageUri != null;
             StorageReference ref = FirebaseUtil.mStorageRef.child(imageUri.getLastPathSegment());
             ref.putFile(imageUri).addOnSuccessListener(this, new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
@@ -155,11 +157,11 @@ public class DealActivity extends AppCompatActivity {
         txtPrice.setEnabled(isEnabled);
     }
     private void showImage(String url){
-        if(url !=null && url.isEmpty() == false){
-           int width = Resources.getSystem().getDisplayMetrics().widthPixels;
+        if(url !=null && !url.isEmpty()){
+           //int width = Resources.getSystem().getDisplayMetrics().widthPixels;
             Picasso.get()
                     .load(url)
-                    .resize( width,width*2/3) // resizes the image to these dimensions (in pixel). does not respect aspect ratio
+                    .resize(100,200) // resizes the image to these dimensions (in pixel). does not respect aspect ratio
                     .centerCrop()
                     .into(imageView);
         }
